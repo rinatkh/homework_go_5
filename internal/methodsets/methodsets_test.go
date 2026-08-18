@@ -6,7 +6,17 @@ func TestNewCounter(t *testing.T) {
 	for _, tt := range []struct {
 		name  string
 		value int
-	}{{"orders", 1}, {"", 0}, {"x", -1}, {"рус", 5}, {"long name", 10}, {"a:b", 7}, {"zero", 0}, {"neg", -100}, {"big", 1000}, {"space ", 3}} {
+	}{
+		{"orders", 1},
+		{"", 0},
+		{"x", -1},
+		{"рус", 5},
+		{"long name", 10},
+		{"a:b", 7},
+		{"zero", 0},
+		{"neg", -100},
+		{"big", 1000},
+		{"space ", 3}} {
 		got := NewCounter(tt.name, tt.value)
 		if got.Name != tt.name || got.Value != tt.value {
 			t.Fatalf("got %#v", got)
@@ -26,7 +36,17 @@ func TestLabel(t *testing.T) {
 	for _, tt := range []struct {
 		c    Counter
 		want string
-	}{{Counter{"orders", 1}, "orders=1"}, {Counter{"", 0}, "=0"}, {Counter{"x", -1}, "x=-1"}, {Counter{"рус", 5}, "рус=5"}, {Counter{"long name", 10}, "long name=10"}, {Counter{"a:b", 7}, "a:b=7"}, {Counter{"zero", 0}, "zero=0"}, {Counter{"neg", -100}, "neg=-100"}, {Counter{"big", 1000}, "big=1000"}, {Counter{"space ", 3}, "space =3"}} {
+	}{
+		{Counter{"orders", 1}, "orders=1"},
+		{Counter{"", 0}, "=0"},
+		{Counter{"x", -1}, "x=-1"},
+		{Counter{"рус", 5}, "рус=5"},
+		{Counter{"long name", 10}, "long name=10"},
+		{Counter{"a:b", 7}, "a:b=7"},
+		{Counter{"zero", 0}, "zero=0"},
+		{Counter{"neg", -100}, "neg=-100"},
+		{Counter{"big", 1000}, "big=1000"},
+		{Counter{"space ", 3}, "space =3"}} {
 		if got := tt.c.Label(); got != tt.want {
 			t.Fatalf("got %q want %q", got, tt.want)
 		}
@@ -34,7 +54,17 @@ func TestLabel(t *testing.T) {
 }
 
 func TestAdd(t *testing.T) {
-	for _, tt := range []struct{ start, delta, want int }{{0, 1, 1}, {1, 1, 2}, {1, -1, 0}, {10, 5, 15}, {-5, 5, 0}, {100, -50, 50}, {0, 0, 0}, {7, 3, 10}, {-10, -5, -15}, {1000, 1, 1001}} {
+	for _, tt := range []struct{ start, delta, want int }{
+		{0, 1, 1},
+		{1, 1, 2},
+		{1, -1, 0},
+		{10, 5, 15},
+		{-5, 5, 0},
+		{100, -50, 50},
+		{0, 0, 0},
+		{7, 3, 10},
+		{-10, -5, -15},
+		{1000, 1, 1001}} {
 		c := Counter{Value: tt.start}
 		c.Add(tt.delta)
 		if c.Value != tt.want {
@@ -78,7 +108,17 @@ func TestUseLabeler(t *testing.T) {
 }
 
 func TestUseAdder(t *testing.T) {
-	for _, tt := range []struct{ start, delta, want int }{{0, 1, 1}, {1, 1, 2}, {1, -1, 0}, {10, 5, 15}, {-5, 5, 0}, {100, -50, 50}, {0, 0, 0}, {7, 3, 10}, {-10, -5, -15}, {1000, 1, 1001}} {
+	for _, tt := range []struct{ start, delta, want int }{
+		{0, 1, 1},
+		{1, 1, 2},
+		{1, -1, 0},
+		{10, 5, 15},
+		{-5, 5, 0},
+		{100, -50, 50},
+		{0, 0, 0},
+		{7, 3, 10},
+		{-10, -5, -15},
+		{1000, 1, 1001}} {
 		c := &Counter{Value: tt.start}
 		if got := UseAdder(c, tt.delta); got != tt.want || c.Value != tt.want {
 			t.Fatalf("got %d value %d want %d", got, c.Value, tt.want)
@@ -90,7 +130,17 @@ func TestIsSnapshoter(t *testing.T) {
 	for _, tt := range []struct {
 		v    any
 		want bool
-	}{{Counter{}, true}, {&Counter{}, true}, {Profile{}, false}, {&Profile{}, false}, {nil, false}, {42, false}, {"x", false}, {struct{}{}, false}, {Counter{Value: 1}, true}, {(*Counter)(nil), true}} {
+	}{
+		{Counter{}, true},
+		{&Counter{}, true},
+		{Profile{}, false},
+		{&Profile{}, false},
+		{nil, false},
+		{42, false},
+		{"x", false},
+		{struct{}{}, false},
+		{Counter{Value: 1}, true},
+		{(*Counter)(nil), true}} {
 		if got := IsSnapshoter(tt.v); got != tt.want {
 			t.Fatalf("got %t want %t for %T", got, tt.want, tt.v)
 		}
@@ -101,7 +151,17 @@ func TestIsAdder(t *testing.T) {
 	for _, tt := range []struct {
 		v    any
 		want bool
-	}{{Counter{}, false}, {&Counter{}, true}, {Profile{}, false}, {&Profile{}, false}, {nil, false}, {42, false}, {"x", false}, {struct{}{}, false}, {Counter{Value: 1}, false}, {(*Counter)(nil), true}} {
+	}{
+		{Counter{}, false},
+		{&Counter{}, true},
+		{Profile{}, false},
+		{&Profile{}, false},
+		{nil, false},
+		{42, false},
+		{"x", false},
+		{struct{}{}, false},
+		{Counter{Value: 1}, false},
+		{(*Counter)(nil), true}} {
 		if got := IsAdder(tt.v); got != tt.want {
 			t.Fatalf("got %t want %t for %T", got, tt.want, tt.v)
 		}
@@ -109,7 +169,17 @@ func TestIsAdder(t *testing.T) {
 }
 
 func TestCloneAndAdd(t *testing.T) {
-	for _, tt := range []struct{ start, delta, want int }{{0, 1, 1}, {1, 1, 2}, {1, -1, 0}, {10, 5, 15}, {-5, 5, 0}, {100, -50, 50}, {0, 0, 0}, {7, 3, 10}, {-10, -5, -15}, {1000, 1, 1001}} {
+	for _, tt := range []struct{ start, delta, want int }{
+		{0, 1, 1},
+		{1, 1, 2},
+		{1, -1, 0},
+		{10, 5, 15},
+		{-5, 5, 0},
+		{100, -50, 50},
+		{0, 0, 0},
+		{7, 3, 10},
+		{-10, -5, -15},
+		{1000, 1, 1001}} {
 		original := Counter{Name: "c", Value: tt.start}
 		got := CloneAndAdd(original, tt.delta)
 		if got.Value != tt.want || original.Value != tt.start || got.Name != "c" {
@@ -119,7 +189,17 @@ func TestCloneAndAdd(t *testing.T) {
 }
 
 func TestAddInPlace(t *testing.T) {
-	for _, tt := range []struct{ start, delta, want int }{{0, 1, 1}, {1, 1, 2}, {1, -1, 0}, {10, 5, 15}, {-5, 5, 0}, {100, -50, 50}, {0, 0, 0}, {7, 3, 10}, {-10, -5, -15}, {1000, 1, 1001}} {
+	for _, tt := range []struct{ start, delta, want int }{
+		{0, 1, 1},
+		{1, 1, 2},
+		{1, -1, 0},
+		{10, 5, 15},
+		{-5, 5, 0},
+		{100, -50, 50},
+		{0, 0, 0},
+		{7, 3, 10},
+		{-10, -5, -15},
+		{1000, 1, 1001}} {
 		c := &Counter{Value: tt.start}
 		if got := AddInPlace(c, tt.delta); got != tt.want || c.Value != tt.want {
 			t.Fatalf("got %d value %d want %d", got, c.Value, tt.want)
@@ -134,7 +214,17 @@ func TestProfileDisplay(t *testing.T) {
 	for _, tt := range []struct {
 		p    Profile
 		want string
-	}{{Profile{"Maria", 25}, "Maria(25)"}, {Profile{"", 0}, "(0)"}, {Profile{"A", -1}, "A(-1)"}, {Profile{"Рус", 5}, "Рус(5)"}, {Profile{"Long Name", 10}, "Long Name(10)"}, {Profile{"a:b", 7}, "a:b(7)"}, {Profile{"zero", 0}, "zero(0)"}, {Profile{"neg", -100}, "neg(-100)"}, {Profile{"big", 1000}, "big(1000)"}, {Profile{"space ", 3}, "space (3)"}} {
+	}{
+		{Profile{"Maria", 25}, "Maria(25)"},
+		{Profile{"", 0}, "(0)"},
+		{Profile{"A", -1}, "A(-1)"},
+		{Profile{"Рус", 5}, "Рус(5)"},
+		{Profile{"Long Name", 10}, "Long Name(10)"},
+		{Profile{"a:b", 7}, "a:b(7)"},
+		{Profile{"zero", 0}, "zero(0)"},
+		{Profile{"neg", -100}, "neg(-100)"},
+		{Profile{"big", 1000}, "big(1000)"},
+		{Profile{"space ", 3}, "space (3)"}} {
 		if got := tt.p.Display(); got != tt.want {
 			t.Fatalf("got %q want %q", got, tt.want)
 		}
@@ -142,7 +232,17 @@ func TestProfileDisplay(t *testing.T) {
 }
 
 func TestProfileRename(t *testing.T) {
-	for _, tt := range []struct{ start, name string }{{"A", "B"}, {"", "B"}, {"A", ""}, {"Рус", "Имя"}, {"Long", "Longer"}, {"a:b", "c:d"}, {"zero", "0"}, {"same", "same"}, {"space", " space "}, {"old", "new"}} {
+	for _, tt := range []struct{ start, name string }{
+		{"A", "B"},
+		{"", "B"},
+		{"A", ""},
+		{"Рус", "Имя"},
+		{"Long", "Longer"},
+		{"a:b", "c:d"},
+		{"zero", "0"},
+		{"same", "same"},
+		{"space", " space "},
+		{"old", "new"}} {
 		p := &Profile{Name: tt.start}
 		p.Rename(tt.name)
 		if p.Name != tt.name {
@@ -157,7 +257,17 @@ func TestIsRenamer(t *testing.T) {
 	for _, tt := range []struct {
 		v    any
 		want bool
-	}{{Profile{}, false}, {&Profile{}, true}, {Counter{}, false}, {&Counter{}, false}, {nil, false}, {42, false}, {"x", false}, {struct{}{}, false}, {&Profile{Name: "A"}, true}, {(*Profile)(nil), true}} {
+	}{
+		{Profile{}, false},
+		{&Profile{}, true},
+		{Counter{}, false},
+		{&Counter{}, false},
+		{nil, false},
+		{42, false},
+		{"x", false},
+		{struct{}{}, false},
+		{&Profile{Name: "A"}, true},
+		{(*Profile)(nil), true}} {
 		if got := IsRenamer(tt.v); got != tt.want {
 			t.Fatalf("got %t want %t for %T", got, tt.want, tt.v)
 		}

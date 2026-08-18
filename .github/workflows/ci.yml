@@ -100,6 +100,6 @@ jobs:
             - run: make package
             - uses: actions/upload-artifact@v4
               with:
-                  name: classroom4-linux-amd64
-                  path: bin/classroom4-linux-amd64.tar.gz
+                  name: homework_go_5-linux-amd64
+                  path: bin/homework_go_5-linux-amd64.tar.gz
                   if-no-files-found: error

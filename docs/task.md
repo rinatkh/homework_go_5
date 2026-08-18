@@ -401,3 +401,28 @@
 | Вход | Вывод и правила |
 |---|---|
 | Путь к файлу. | Открыть файл, посчитать строки через Scanner, закрыть файл, вернуть ошибки открытия/сканирования. |
+
+---
+
+# Самопроверка перед отправкой
+
+```bash
+make compile
+make fmt
+make fmt-check
+make test-interfaces
+make test-methodsets
+make test-io
+make test-common
+make test-unit
+make test-integration
+make ci
+```
+
+Перед PR проверь:
+
+- все TODO реализованы;
+- сигнатуры и тесты не изменены;
+- каждый раздел проходит отдельно;
+- `make ci` проходит полностью;
+- в репозиторий не добавлены бинарники, coverage-файлы и файлы IDE.

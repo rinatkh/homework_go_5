@@ -7,9 +7,9 @@ BIN_DIR := bin
 COVERAGE_FILE ?= coverage.out
 COVERAGE_THRESHOLD ?= 80.0
 PACKAGE_FILE ?= $(BIN_DIR)/homework_go_5-linux-amd64.tar.gz
-CMDS := 01_interfaces 02_methodsets 03_io 04_common
+CMDS := 01_interfaces 02_methodsets 03_io 04_args 05_common
 
-.PHONY: help deps-check mod-check fmt fmt-check vet test test-unit test-integration test-race coverage coverage-check build package clean run-all ci compile test-interfaces test-methodsets test-io test-common $(addprefix run-,$(CMDS))
+.PHONY: help deps-check mod-check fmt fmt-check vet test test-unit test-integration test-race coverage coverage-check build package clean run-all ci compile test-interfaces test-methodsets test-io test-args test-common $(addprefix run-,$(CMDS))
 
 help:
 	@echo "Available commands:"
@@ -17,6 +17,7 @@ help:
 	@echo "  make test-interfaces  - run interface tasks tests"
 	@echo "  make test-methodsets  - run method set tasks tests"
 	@echo "  make test-io          - run io tasks tests"
+	@echo "  make test-args        - run command-line argument tasks tests"
 	@echo "  make test-common      - run common file tasks tests"
 	@echo "  make ci               - full local CI after solving all tasks"
 
@@ -63,6 +64,9 @@ test-methodsets:
 test-io:
 	$(GO) test ./internal/ioflow/...
 
+test-args:
+	$(GO) test ./internal/cliargs/...
+
 test-common:
 	$(GO) test ./internal/common/...
 
@@ -81,7 +85,10 @@ coverage-check: coverage
 	}'
 
 run-all:
-	@for cmd in $(CMDS); do echo "== $$cmd =="; $(GO) run ./cmd/$$cmd; done
+	@for cmd in $(CMDS); do \
+		echo "== $$cmd =="; \
+		if [ "$$cmd" = "04_args" ]; then $(GO) run ./cmd/$$cmd "Maria Petrova" 2; else $(GO) run ./cmd/$$cmd; fi; \
+	done
 
 run-01_interfaces:
 	$(GO) run ./cmd/01_interfaces
@@ -89,8 +96,10 @@ run-02_methodsets:
 	$(GO) run ./cmd/02_methodsets
 run-03_io:
 	$(GO) run ./cmd/03_io
-run-04_common:
-	$(GO) run ./cmd/04_common
+run-04_args:
+	$(GO) run ./cmd/04_args "Maria Petrova" 2
+run-05_common:
+	$(GO) run ./cmd/05_common
 
 build:
 	@mkdir -p $(BIN_DIR)
